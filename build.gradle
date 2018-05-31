@@ -5,6 +5,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
@@ -16,10 +17,16 @@ buildscript {
     }
 }
 
+def bintray_user = "hglf"
+def Repository = "maven"
+
 allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url "http://dl.bintray.com/$bintray_user/$Repository"
+        }
     }
 }
 

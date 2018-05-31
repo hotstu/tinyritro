@@ -1,3 +1,4 @@
+//打包 上传需在命令行执行 gradlew :tinyritro-compiler:bintrayUpload, 点击任务执行会报错
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
@@ -8,12 +9,10 @@ if (projectPropertiesFile.exists()) {
 } else {
     throw new Error("Cannot find project.properties file in " + project.name + " folder")
 }
-File localPropertiesFile = project.file("deploy.properties")
-if (localPropertiesFile.exists()) {
-    properties.load(localPropertiesFile.newDataInputStream())
-} else {
-    throw new Error("Cannot find deploy.properties file in " + project.name + " folder")
-}
+
+def keystorePropertiesFile = rootProject.file("local.properties");
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 install {
     repositories.mavenInstaller {
@@ -60,8 +59,8 @@ artifacts {
     archives sourcesJar
 }
 bintray {
-    user = properties.getProperty("bintray.user")
-    key = properties.getProperty("bintray.apikey")
+    user = keystoreProperties['bintray.user']
+    key = keystoreProperties['bintray.key']
     configurations = ['archives']
     pkg {
         repo = properties.getProperty("project.repo")
@@ -69,7 +68,7 @@ bintray {
         websiteUrl = properties.getProperty("project.siteUrl")
         vcsUrl = properties.getProperty("project.gitUrl")
         licenses = ["MIT"]
-        publish = true
+        //publish = true
     }
 }
 javadoc { //javadoc 采用 utf-8 编码否则会报“GBK的不可映射字符”错误

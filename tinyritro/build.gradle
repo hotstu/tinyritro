@@ -1,0 +1,19 @@
+apply plugin: 'java-library'
+
+group = 'gitbub.hotstu'//发布到 bintray 的groupId号
+version = "0.0.1" // 发布到 bintray 的版本号
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compileOnly 'com.squareup.okhttp3:okhttp:3.9.1'
+    compileOnly 'io.reactivex.rxjava2:rxjava:2.1.8'
+    compileOnly "com.google.code.gson:gson:2.8.2"
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+apply from: "deployMaven.gradle"
+apply from: "deployBintray.gradle"
+
+

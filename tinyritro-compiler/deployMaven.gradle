@@ -1,12 +1,9 @@
 apply plugin: 'maven-publish'
 
-Properties properties = new Properties()
-File projectPropertiesFile = project.file('deploy.properties')
-if (projectPropertiesFile.exists()) {
-    properties.load(projectPropertiesFile.newDataInputStream())
-} else {
-    throw new Error("Cannot find deploy.properties file in " + project.name + " folder")
-}
+def keystorePropertiesFile = rootProject.file("local.properties");
+def properties = new Properties()
+properties.load(new FileInputStream(keystorePropertiesFile))
+
 publishing {
     publications {
         mavenjava(MavenPublication) {

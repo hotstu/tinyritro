@@ -1,10 +1,13 @@
 apply plugin: 'java-library'
 
+group = 'gitbub.hotstu'//发布到 bintray 的groupId号
+version = "0.0.1" // 发布到 bintray 的版本号
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.auto.service:auto-service:1.0-rc2'
     implementation 'com.squareup:javapoet:1.10.0'
-    implementation project(':lib')
+    implementation project(':tinyritro')
 }
 
 //  解决build警告：编码GBK的不可映射字符
@@ -14,3 +17,6 @@ tasks.withType(JavaCompile) {
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+apply from: "deployMaven.gradle"
+apply from: "deployBintray.gradle"
