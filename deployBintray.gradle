@@ -8,7 +8,9 @@ File projectPropertiesFile = rootProject.file('project.properties')
 if (projectPropertiesFile.exists()) {
     properties.load(projectPropertiesFile.newDataInputStream())
 } else {
-    throw new Error("Cannot find project.properties file in " + project.name + " folder")
+    //throw new Error("Cannot find project.properties file in " + project.name + " folder")
+    println("local.properties not exits, return")
+    return
 }
 
 def keystorePropertiesFile = rootProject.file("local.properties");

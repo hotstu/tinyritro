@@ -1,9 +1,15 @@
 apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
-def keystorePropertiesFile = rootProject.file("local.properties");
 def properties = new Properties()
-properties.load(new FileInputStream(keystorePropertiesFile))
+
+try {
+    def keystorePropertiesFile = rootProject.file("local.properties2");
+    properties.load(new FileInputStream(keystorePropertiesFile))
+} catch (Exception e) {
+    println("local.properties not exits, return")
+    return
+}
 
 publishing {
     publications {
