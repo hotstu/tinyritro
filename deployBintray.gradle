@@ -4,14 +4,14 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 Properties properties = new Properties()
-File projectPropertiesFile = rootProject.file('project.properties')
-if (projectPropertiesFile.exists()) {
+try {
+    File projectPropertiesFile = rootProject.file('project.properties')
     properties.load(projectPropertiesFile.newDataInputStream())
-} else {
-    //throw new Error("Cannot find project.properties file in " + project.name + " folder")
+} catch (Exception e) {
     println("local.properties not exits, return")
     return
 }
+
 
 def keystorePropertiesFile = rootProject.file("local.properties");
 def keystoreProperties = new Properties()
