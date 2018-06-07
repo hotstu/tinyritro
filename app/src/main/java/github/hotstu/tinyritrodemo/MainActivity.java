@@ -4,13 +4,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.HashMap;
 
 import github.hotstu.tinyritro.gen.TinyRitro;
+import github.hotstu.tinyritrodemo.aop.WithinPermission;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+import static android.Manifest.permission.CAMERA;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,5 +45,11 @@ public class MainActivity extends AppCompatActivity {
                         throwable.printStackTrace();
                     }
                 });
+    }
+
+
+    @WithinPermission({CAMERA})
+    public void send2(View v) {
+        Toast.makeText(this, "open camera", Toast.LENGTH_LONG).show();
     }
 }

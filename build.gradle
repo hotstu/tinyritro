@@ -1,32 +1,49 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+
+
 buildscript {
-    
+    def bintray_user = "hglf"
+    def Repository = "maven"
     repositories {
         google()
         jcenter()
 
+        maven {
+            url "https://dl.bintray.com/$bintray_user/$Repository"
+        }
+//        maven{
+//            url uri('repo')//本地仓库 debug use
+//        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
-
+        classpath(group: 'gitbub.hotstu', name: 'tinyritro-aopplugin', version: '0.0.2', classifier: '')
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-def bintray_user = "hglf"
-def Repository = "maven"
-
-allprojects {
+subprojects {
+    def bintray_user = "hglf"
+    def Repository = "maven"
     repositories {
         google()
         jcenter()
         maven {
-            url "http://dl.bintray.com/$bintray_user/$Repository"
+            url "https://dl.bintray.com/$bintray_user/$Repository"
         }
+    }
+
+
+    if ("tinyritro-lib" == it.name || "tinyritro-aopplugin" == it.name || "tinyritro-compiler" == it.name) {
+        group = 'gitbub.hotstu.tinyritro'//发布到 bintray 的groupId号
+        version = "0.0.1" // 发布到 bintray 的版本号
+        apply from: "../deployMaven.gradle"
+        apply from: "../deployBintray.gradle"
+        println it.name + "1"
     }
 }
 

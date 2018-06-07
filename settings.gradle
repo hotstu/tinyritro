@@ -1,1 +1,1 @@
-include ':app', ':tinyritro', ':tinyritro-compiler'
+include ':app', ':tinyritro-lib', ':tinyritro-compiler', ':tinyritro-aopplugin'

@@ -1,0 +1,25 @@
+apply plugin: 'groovy'
+//apply plugin: 'maven'
+
+targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_7
+
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    compile 'com.android.tools.build:gradle:3.0.1'
+    compile 'org.aspectj:aspectjtools:1.8.9'
+}
+
+//upload to local maven, for debug only
+//注意⚠️:   插件修改后运行前需要重新发布: ./gradlew -p plugin clean build uploadArchives --info
+//uploadArchives {
+//    repositories.mavenDeployer {
+//        repository(url: uri('../repo'))
+//        pom.groupId = 'github.hotstu'
+//        pom.artifactId = 'tinyritro-aopplugin'
+//        pom.version = '0.0.1'
+//    }
+//}
+
+

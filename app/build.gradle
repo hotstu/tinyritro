@@ -26,5 +26,10 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation 'com.google.code.gson:gson:2.8.2'
     annotationProcessor 'gitbub.hotstu:tinyritro-compiler:0.0.1'
-    implementation 'gitbub.hotstu:tinyritro:0.0.1'
+    implementation 'org.aspectj:aspectjrt:1.8.9'
+    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5'
+    implementation project(':tinyritro-lib')
 }
+
+apply plugin: 'tinyritro-aopplugin'
+

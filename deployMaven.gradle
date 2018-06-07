@@ -1,3 +1,4 @@
+apply plugin: 'java-library'
 apply plugin: 'maven-publish'
 
 def keystorePropertiesFile = rootProject.file("local.properties");
@@ -41,7 +42,7 @@ publishing {
     repositories {
         maven {
             url properties.getProperty("maven.url")
-            credentials {
+            credentials  {
                 username properties.getProperty("maven.username")
                 password properties.getProperty("maven.password")
             }

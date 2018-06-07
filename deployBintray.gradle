@@ -1,9 +1,10 @@
 //打包 上传需在命令行执行 gradlew :tinyritro-compiler:bintrayUpload, 点击任务执行会报错
+apply plugin: 'java-library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 Properties properties = new Properties()
-File projectPropertiesFile = project.file('project.properties')
+File projectPropertiesFile = rootProject.file('project.properties')
 if (projectPropertiesFile.exists()) {
     properties.load(projectPropertiesFile.newDataInputStream())
 } else {
@@ -13,6 +14,7 @@ if (projectPropertiesFile.exists()) {
 def keystorePropertiesFile = rootProject.file("local.properties");
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 
 install {
     repositories.mavenInstaller {
