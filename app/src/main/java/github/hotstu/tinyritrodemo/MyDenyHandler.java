@@ -13,6 +13,5 @@ public class MyDenyHandler implements DenyHandler {
     @Override
     public void onDenied(Object ac, Object permisson, String Tag) {
         Toast.makeText((Activity) ac, "denied", Toast.LENGTH_LONG).show();
-
     }
 }

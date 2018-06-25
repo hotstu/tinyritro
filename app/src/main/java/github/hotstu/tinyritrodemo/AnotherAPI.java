@@ -12,7 +12,7 @@ import io.reactivex.Flowable;
  * @since 2018/5/29
  */
 @EntryPoint(value = "http://httpbin.org/get", name = "CustomeClassName")
-public interface AnotherClass {
+public interface AnotherAPI {
     @Query(path = "/app/login")
     Flowable<Person> best(Map<String, String> params);
 }

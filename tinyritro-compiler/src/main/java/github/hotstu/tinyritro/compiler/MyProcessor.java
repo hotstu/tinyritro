@@ -11,6 +11,7 @@ import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,7 +38,9 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
 import github.hotstu.tinyritro.anotations.EntryPoint;
+import github.hotstu.tinyritro.anotations.PathParam;
 import github.hotstu.tinyritro.anotations.Query;
+import github.hotstu.tinyritro.anotations.QueryParam;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({"github.hotstu.tinyritro.anotations.Query"})
@@ -48,6 +51,7 @@ public class MyProcessor extends AbstractProcessor {
     private Types typeUtils;
     private static final String FLOWABLE_TYPE = "io.reactivex.Flowable";
     private static final String RXFETCH_TYPE = "github.hotstu.tinyritro.http.RxFetch";
+    private static final String UrlFormatter_TYPE = "github.hotstu.tinyritro.http.UrlFormatter";
     private static final String OKHTTPCLIENT_TYPE = "okhttp3.OkHttpClient";
     private static final String TYPETOKEN_TYPE = "com.google.gson.reflect.TypeToken";
     private static final String PAKAGE_NAME = "github.hotstu.tinyritro.gen";
@@ -95,7 +99,6 @@ public class MyProcessor extends AbstractProcessor {
         }
 
         info("process..." + builderMap);
-        Set<ClassName> entryPointSet = new HashSet<>();
         for (TypeElement typeElement : builderMap.keySet()) {
             EntryPoint entryAnotation = typeElement.getAnnotation(EntryPoint.class);
             final String fileName = filename(entryAnotation, typeElement);
@@ -123,40 +126,104 @@ public class MyProcessor extends AbstractProcessor {
                 TypeMirror TargetJsonClass;
                 if (returnType instanceof DeclaredType) {
                     if (!FLOWABLE_TYPE.equals(erasureType)) {
-                        error("返回类型必须是如Flowable<?>的形式，当前为"+returnType);
+                        error("返回类型必须是如Flowable<?>的形式，当前为" + returnType);
                         continue;
                     }
                     DeclaredType typeVariable = (DeclaredType) returnType;
                     List<? extends TypeMirror> typeArguments = typeVariable.getTypeArguments();
                     TargetJsonClass = typeArguments.get(0);
-                    info("DeclaredType..." +  typeArguments);
+                    info("DeclaredType..." + typeArguments);
                 } else {
-                    error("返回类型必须是如Flowable<?>的形式，当前为"+returnType);
+                    error("返回类型必须是如Flowable<?>的形式，当前为" + returnType);
                     continue;
                 }
-                info("method..." +  erasureType);
+                info("method..." + erasureType);
 
                 List<? extends VariableElement> parameters = executableElement.getParameters();
                 List<ParameterSpec> parameterSpecs = new ArrayList<>();
+                List<VariableElement> pathParams = new ArrayList<>();
+                List<VariableElement> queryParams = new ArrayList<>();
+                ParameterSpec mapParam = null;
                 for (VariableElement parameter : parameters) {
-                    parameterSpecs.add(ParameterSpec.get(parameter));
-                }
-                //TODO 支持传入参入合并到请求地址中
-                Query annotation = executableElement.getAnnotation(Query.class);
+                    PathParam pathParam = parameter.getAnnotation(PathParam.class);
+                    QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
+                    //info("-parameter annotation:"+pathParam + queryParam);
+                    ParameterSpec parameterSpec = ParameterSpec.get(parameter);
+                    parameterSpecs.add(parameterSpec);
+                    if (pathParam != null) {
+                        pathParams.add(parameter);
+                    } else if (queryParam != null) {
+                        queryParams.add(parameter);
+                    } else {
+                        //判断是否是map类型
+                        boolean assignable = typeUtils.isAssignable(
+                                utils.getTypeElement(doubleErasure(parameter.asType())).asType(),
+                                utils.getTypeElement("java.util.Map").asType());
+                        info("parameter isAssignable:"+assignable + parameter.asType());
+                        if (assignable) {
+                            mapParam = parameterSpec;
+                        }
+                    }
 
-                MethodSpec method = MethodSpec.methodBuilder(executableElement.getSimpleName().toString())
+                }
+
+                Query annotation = executableElement.getAnnotation(Query.class);
+                MethodSpec.Builder builder = MethodSpec.methodBuilder(executableElement.getSimpleName().toString())
                         .addModifiers(Modifier.PUBLIC)
                         .returns(TypeName.get(executableElement.getReturnType()))
-                        .addParameters(parameterSpecs)
-                        .addStatement("return rxFetch.<$T>$L($S, $L, new $T<$T>(){}.getType())",
-                                ClassName.get(TargetJsonClass),
-                                annotation.method().getValue(),
-                                "".equals(annotation.url())?entryPointValue + annotation.path():annotation.url(),
-                                parameterSpecs.get(0).name,
-                                ClassName.bestGuess(TYPETOKEN_TYPE),
-                                ClassName.get(TargetJsonClass))
-                        .build();
-                impl.addMethod(method);
+                        .addParameters(parameterSpecs);
+                final String url = "".equals(annotation.url()) ? entryPointValue + annotation.path() : annotation.url();
+                // 支持传入参入合并到请求地址中
+                if (pathParams.size() > 0) {
+                    builder.addStatement("$T<String, String> urlParam = new $T<>()", Map.class, HashMap.class);
+                    for (int i = 0; i < pathParams.size(); i++) {
+                        VariableElement variableElement = pathParams.get(i);
+                        PathParam ano = variableElement.getAnnotation(PathParam.class);
+                        String key;
+                        if("".equals(ano.value())) {
+                            key = variableElement.getSimpleName().toString();
+                        } else {
+                            key = ano.value();
+                        }
+                        builder.addStatement("urlParam.put($S, $L+\"\")", key, variableElement.getSimpleName().toString());
+                    }
+                    builder.addStatement("String url = $T.format($S,$L)",
+                            ClassName.bestGuess(UrlFormatter_TYPE),
+                            url,
+                            "urlParam");
+                } else {
+                    builder.addStatement("String url = $S",
+                            "".equals(annotation.url()) ? entryPointValue + annotation.path() : annotation.url());
+                }
+                String paramsName;
+                if (mapParam == null) {
+                    builder.addStatement("Map<String, String> __params = new HashMap<>()");
+                    paramsName = "__params";
+                } else {
+                    paramsName = mapParam.name;
+                }
+                if (queryParams.size() > 0) {
+                    for (int i = 0; i < queryParams.size(); i++) {
+                        VariableElement variableElement = queryParams.get(i);
+                        QueryParam ano = variableElement.getAnnotation(QueryParam.class);
+                        String key;
+                        if("".equals(ano.value())) {
+                            key = variableElement.getSimpleName().toString();
+                        } else {
+                            key = ano.value();
+                        }
+                        builder.addStatement("$L.put($S, $L)", paramsName, key, variableElement.getSimpleName().toString());
+                    }
+                }
+                builder.addStatement("return rxFetch.<$T>$L($L, $L, new $T<$T>(){}.getType())",
+                        ClassName.get(TargetJsonClass),
+                        annotation.method().getValue(),
+                        "url",
+                        paramsName,
+                        ClassName.bestGuess(TYPETOKEN_TYPE),
+                        ClassName.get(TargetJsonClass));
+
+                impl.addMethod(builder.build());
             }
             JavaFile javaFile = JavaFile.builder(packageOf.asType().toString(), impl.build()).build();
             try {
@@ -171,11 +238,11 @@ public class MyProcessor extends AbstractProcessor {
         ClassName tinyRitroBuilderClass = ClassName.get(tinyRitroClass.toString(), "Builder");
         TypeSpec builderSpec = TypeSpec.classBuilder("Builder")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL, Modifier.STATIC)
-                .addField(FieldSpec.builder(okhttpclientClass, "client",Modifier.PRIVATE).build())
+                .addField(FieldSpec.builder(okhttpclientClass, "client", Modifier.PRIVATE).build())
                 .addMethod(MethodSpec.methodBuilder("client")
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(okhttpclientClass, "client")
-                        .returns( tinyRitroBuilderClass)
+                        .returns(tinyRitroBuilderClass)
                         .addStatement("this.client = client")
                         .addStatement("return this")
                         .build()
@@ -209,12 +276,12 @@ public class MyProcessor extends AbstractProcessor {
             ClassName interfaceClass = ClassName.get(typeElement);
             String instanceName = "m" + interfaceClass.simpleName();
             rxFetchSpecBuilder.addField(FieldSpec.builder(implClassName, instanceName, Modifier.PRIVATE).build());
-            rxFetchSpecBuilder.addMethod(MethodSpec.methodBuilder("get"+ interfaceClass.simpleName())
+            rxFetchSpecBuilder.addMethod(MethodSpec.methodBuilder("get" + interfaceClass.simpleName())
                     .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .returns(interfaceClass)
-                    .beginControlFlow("if ($L == null)",instanceName)
+                    .beginControlFlow("if ($L == null)", instanceName)
                     .beginControlFlow("synchronized ($T.class)", implClassName)
-                    .beginControlFlow("if ($L == null)",instanceName)
+                    .beginControlFlow("if ($L == null)", instanceName)
                     .addStatement("$L = new $T(rxFetch)", instanceName, implClassName)
                     .endControlFlow()
                     .endControlFlow()
@@ -241,7 +308,9 @@ public class MyProcessor extends AbstractProcessor {
         this.processingEnv.getMessager().printMessage(Diagnostic.Kind.NOTE, String.format(msg, args));
     }
 
-    /** Uses both {@link Types#erasure} and string manipulation to strip any generic types. */
+    /**
+     * Uses both {@link Types#erasure} and string manipulation to strip any generic types.
+     */
     private String doubleErasure(TypeMirror elementType) {
         String name = typeUtils.erasure(elementType).toString();
         int typeParamStart = name.indexOf('<');
@@ -252,7 +321,7 @@ public class MyProcessor extends AbstractProcessor {
     }
 
     private String filename(EntryPoint entryAnotation, TypeElement typeElement) {
-        return  "".equals(entryAnotation.name()) ? typeElement.getSimpleName().toString() + "Impl" : entryAnotation.name();
+        return "".equals(entryAnotation.name()) ? typeElement.getSimpleName().toString() + "Impl" : entryAnotation.name();
 
     }
 }

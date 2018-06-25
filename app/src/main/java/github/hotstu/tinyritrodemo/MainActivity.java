@@ -10,9 +10,7 @@ import java.util.HashMap;
 
 import github.hotstu.tinyritro.gen.TinyRitro;
 import github.hotstu.tinyritrodemo.aop.WithinPermission;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -31,9 +29,8 @@ public class MainActivity extends AppCompatActivity {
     public void send(View view) {
         HashMap<String, String> params = new HashMap<>();
         params.put("aaa", "bbb");
-        build.getMyClass().get(params)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
+        build.getAPIService1().get(params, "233",233)
+                .compose(RxSchedulers.<String>io_main())
                 .subscribe(new Consumer<String>() {
                     @Override
                     public void accept(String strings) throws Exception {

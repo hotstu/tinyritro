@@ -40,10 +40,9 @@ subprojects {
 
     if ("tinyritro-lib" == it.name || "tinyritro-aopplugin" == it.name || "tinyritro-compiler" == it.name) {
         group = 'gitbub.hotstu.tinyritro'//发布到 bintray 的groupId号
-        version = "0.0.1" // 发布到 bintray 的版本号
+        version = "0.0.2" // 发布到 bintray 的版本号
         apply from: "../deployMaven.gradle"
         apply from: "../deployBintray.gradle"
-        println it.name + "1"
     }
 }
 
