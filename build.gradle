@@ -10,12 +10,12 @@ buildscript {
         google()
         jcenter()
 
-//        maven {
-//            url "https://dl.bintray.com/$bintray_user/$Repository"
-//        }
-        maven{
-            url uri("${userHome}/repo")//本地仓库 debug use
+        maven {
+            url "https://dl.bintray.com/$bintray_user/$Repository"
         }
+//        maven{
+//            url uri("${userHome}/repo")//本地仓库 debug use
+//        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'

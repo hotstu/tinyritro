@@ -1,7 +1,7 @@
- [ ![Download](https://api.bintray.com/packages/hglf/maven/tinyritro/images/download.svg) ](https://bintray.com/hglf/maven/tinyritro/_latestVersion)
+ [ ![Download](https://api.bintray.com/packages/hglf/maven/tinyritro/images/download.svg) ](https://bintray.com/hglf/maven/tinyritro/_latestVersion)[![Build Status](https://travis-ci.org/hotstu/tinyritro.svg?branch=master)](https://travis-ci.org/hotstu/tinyritro)
 
 ## tinyritro
-[![Build Status](https://travis-ci.org/hotstu/tinyritro.svg?branch=master)](https://travis-ci.org/hotstu/tinyritro)
+
 轻量的api请求库，基于okhttp3、rxjava2, 使用方式类似retrofit，使用apt，不使用反射,自动完成api请求、json解析，并返回Flowable用于后续调用
 
 ## 使用
