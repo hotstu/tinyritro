@@ -1,16 +1,16 @@
 package github.hotstu.tinyritrodemo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.HashMap;
 
+import androidx.appcompat.app.AppCompatActivity;
 import github.hotstu.tinyritro.gen.TinyRitro;
 import github.hotstu.tinyritrodemo.aop.WithinPermission;
-import io.reactivex.functions.Consumer;
+import io.reactivex.disposables.Disposable;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -27,21 +27,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void send(View view) {
+        Toast.makeText(this, "watch logcat", Toast.LENGTH_LONG).show();
+
         HashMap<String, String> params = new HashMap<>();
         params.put("aaa", "bbb");
-        build.getAPIService1().get(params, "233",233)
-                .compose(RxSchedulers.<String>io_main())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String strings) throws Exception {
-                        Log.d("result", "" + strings);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        throwable.printStackTrace();
-                    }
-                });
+        Disposable subscribe = build.getAPIService1().get(params, "233", 233)
+                .compose(RxSchedulers.io_main())
+                .subscribe(strings -> Log.d("result", "" + strings), throwable -> throwable.printStackTrace());
     }
 
 

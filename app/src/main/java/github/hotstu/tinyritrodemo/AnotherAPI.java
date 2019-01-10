@@ -3,8 +3,8 @@ package github.hotstu.tinyritrodemo;
 
 import java.util.Map;
 
-import github.hotstu.tinyritro.anotations.EntryPoint;
-import github.hotstu.tinyritro.anotations.Query;
+import github.hotstu.tinyritro.lib.anotations.EntryPoint;
+import github.hotstu.tinyritro.lib.anotations.Query;
 import io.reactivex.Flowable;
 
 /**

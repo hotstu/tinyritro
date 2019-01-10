@@ -1,11 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+    compileSdkVersion 28
     defaultConfig {
         applicationId "github.hotstu.tinyritrodemo"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.0"
     }
@@ -19,18 +23,19 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
     implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'gitbub.hotstu.labo:labo-rxfetch:0.0.1'
     //annotationProcessor 'gitbub.hotstu.tinyritro:tinyritro-compiler:0.0.1'
-    annotationProcessor project(':tinyritro-compiler')
+    annotationProcessor project(':compiler')
     implementation 'org.aspectj:aspectjrt:1.8.9'
     implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5'
-    implementation project(':tinyritro-lib')
+    implementation project(':lib')
 }
 
-apply plugin: 'tinyritro-aopplugin'
+apply plugin: 'aopplugin'
 

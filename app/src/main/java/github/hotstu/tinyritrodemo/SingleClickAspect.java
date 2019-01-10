@@ -1,7 +1,6 @@
 package github.hotstu.tinyritrodemo;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 
@@ -13,6 +12,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
+import androidx.fragment.app.Fragment;
 import github.hotstu.tinyritrodemo.aop.DenyHandler;
 import github.hotstu.tinyritrodemo.aop.WithinPermission;
 import io.reactivex.functions.Consumer;
@@ -23,13 +23,14 @@ import io.reactivex.functions.Consumer;
 @Aspect
 public class SingleClickAspect {
 
-    @Pointcut(" execution(@github.hotstu.tinyritro.aop.WithinPermission * *(..))  && @annotation(permission) && args(..,v)")
+    @Pointcut(" execution(@github.hotstu.tinyritrodemo.aop.WithinPermission * *(..))  && @annotation(permission) && args(..,v)")
 //方法切入点
     public void methodAnnotated(WithinPermission permission, View v) {
     }
 
     @Around("methodAnnotated(permission,v)")//在连接点进行方法替换
     public void aroundJoinPoint(final ProceedingJoinPoint joinPoint, final WithinPermission permission, View v) throws Throwable {
+        System.out.println("aroundJoinPoint");
 
         final Object aThis = joinPoint.getThis();
         final Activity ac;
@@ -49,6 +50,7 @@ public class SingleClickAspect {
                     @Override
                     public void accept(Permission granted) throws Exception {
                         if(granted.granted) {
+                            System.out.println("granted");
                             try {
                                 joinPoint.proceed();//执行原方法
                             } catch (Throwable throwable) {
