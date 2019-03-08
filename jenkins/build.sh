@@ -10,9 +10,9 @@ else
 fi
 
 if [ ${flavor} = "release" ]; then
-    gradle assembleRelease;
+    ./gradlew assembleRelease;
 else
-    gradle assembleDebug;
+    ./gradlew assembleDebug;
 fi
 
 echo "[BUILD task end] `date '+%Y-%m-%d %H:%M:%S'`\n";
