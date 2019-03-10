@@ -4,7 +4,7 @@ pipeline {
     agent {
         docker {
             image 'alvrme/alpine-android:android-28'
-            args '-v /root/.m2:/root/.m2 -v /var/www:/var/www'
+            args '-v $HOME/.m2:/root/.m2 -v $HOME/.gradle:/root/.gradle'
         }
     }
     environment {
