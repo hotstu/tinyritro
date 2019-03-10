@@ -4,7 +4,7 @@ pipeline {
     agent {
         docker {
             image 'alvrme/alpine-android:android-28'
-            args '-v /var/www:/var/www'
+            args '-v /root/.m2:/root/.m2 -v /var/www:/var/www'
         }
     }
     environment {
@@ -29,7 +29,7 @@ pipeline {
         }
         stage('Cleanup') {
             steps {
-                sh 'gradle clean'
+                sh './gradlew clean'
             }
         }
     }
