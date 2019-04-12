@@ -1,0 +1,136 @@
+//本脚本将编译后的aar上传私有artifactory仓库
+//artifactory需要配置~/.gradle/gradle.properties
+//import below in project.gradle
+//buildscript {
+//    ...
+//    dependencies {
+//        //Check for the latest version here: http://plugins.gradle.org/plugin/com.jfrog.artifactory
+//        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.9.5"
+//    }
+//}
+
+//deploy:
+//./gradlew assembleRelease artifactoryPublish
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+
+
+task testConfig {
+    doLast {
+        configurations.implementation.allDependencies.all {
+            println it
+        }
+    }
+}
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options {
+        failOnError false
+        encoding "UTF-8"
+        charSet "UTF-8"
+        addStringOption('Xdoclint:none', '-quiet')
+    }
+    android.libraryVariants.all { variant ->
+        if (variant.name == 'release') {
+            owner.classpath += variant.javaCompile.classpath
+        }
+    }
+    exclude '**/R.html', '**/R.*.html', '**/index.html'
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+
+publishing {
+    publications {
+        aar(MavenPublication) {
+            groupId project.group
+            version = project.version
+            artifactId project.name
+
+            artifact bundleReleaseAar
+            artifact androidJavadocsJar
+            artifact androidSourcesJar
+            //artifact file("$buildDir/outputs/aar/${project.name}-release.aar")
+            //https://stackoverflow.com/questions/26874498/publish-an-android-library-to-maven-with-aar-and-source-jar
+            pom.withXml {
+                final dependenciesNode = asNode().appendNode('dependencies')
+
+                ext.addDependency = { Dependency dep, String scope ->
+                    if (dep.group == null || dep.version == null || dep.name == null || dep.name == "unspecified")
+                        return // ignore invalid dependencies
+
+                    final dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', dep.group)
+                    dependencyNode.appendNode('artifactId', dep.name)
+                    dependencyNode.appendNode('version', dep.version)
+                    dependencyNode.appendNode('scope', scope)
+
+                    if (!dep.transitive) {
+                        // If this dependency is transitive, we should force exclude all its dependencies them from the POM
+                        final exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
+                        exclusionNode.appendNode('groupId', '*')
+                        exclusionNode.appendNode('artifactId', '*')
+                    } else if (!dep.properties.excludeRules.empty) {
+                        // Otherwise add specified exclude rules
+                        final exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
+                        dep.properties.excludeRules.each { ExcludeRule rule ->
+                            exclusionNode.appendNode('groupId', rule.group ?: '*')
+                            exclusionNode.appendNode('artifactId', rule.module ?: '*')
+                        }
+                    }
+                }
+
+                // List all "compile" dependencies (for old Gradle)
+                configurations.compile.getDependencies().each { dep -> addDependency(dep, "compile") }
+                // List all "api" dependencies (for new Gradle) as "compile" dependencies
+                configurations.api.getDependencies().each { dep -> addDependency(dep, "compile") }
+                // List all "implementation" dependencies (for new Gradle) as "runtime" dependencies
+                configurations.implementation.getDependencies().each { dep -> addDependency(dep, "runtime") }
+            }
+        }
+    }
+}
+
+
+artifactory {
+    contextUrl = "${artifactory_contextUrl}"
+
+
+    publish {
+        repository {
+            repoKey = project.version.endsWith('SNAPSHOT') ? "${artifactory_repo_snapshot}":"${artifactory_repo_release}"
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+        }
+        defaults {
+            // Tell the Artifactory Plugin which artifacts should be published to Artifactory.
+            publications('aar')
+            publishArtifacts = true
+
+            // Properties to be attached to the published artifacts.
+            properties = ['qa.level': 'basic', 'dev.team': 'core']
+            // Publish generated POM files to Artifactory (true by default)
+            publishPom = true
+        }
+    }
+    resolve {
+        repository {
+            repoKey = "${artifactory_repo_release}"
+            username = "${artifactory_user}"
+            password = "${artifactory_password}"
+            maven = true
+        }
+    }
+}
+
+
