@@ -3,7 +3,8 @@
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-if (!bintray_user) {
+if (!project.hasProperty('bintray_user')) {
+    println("bintray_user not set, ignore deploying ")
     return
 }
 Properties properties = new Properties()
