@@ -1,46 +1,29 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-
-
 buildscript {
-    def bintray_user = "hglf"
-    def Repository = "maven"
-    ext.userHome = System.getProperty("user.home")
     repositories {
         google()
         jcenter()
-
-        maven {
-            url "https://dl.bintray.com/$bintray_user/$Repository"
-        }
-//        maven{
-//            url uri("${userHome}/repo")//本地仓库 debug use
-//        }
+        mavenLocal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0'
-        classpath(group: 'gitbub.hotstu.tinyritro', name: 'aopplugin', version: '1.0.0', classifier: '')
+        //classpath(group: 'github.hotstu.tinyritro', name: 'aopplugin', version: '1.0.0', classifier: '')
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 subprojects {
-    def bintray_user = "hglf"
-    def Repository = "maven"
     repositories {
         google()
         jcenter()
-        maven {
-            url "https://dl.bintray.com/$bintray_user/$Repository"
-        }
+        mavenLocal()
     }
 
-
     if ("lib" == it.name || "aopplugin" == it.name || "compiler" == it.name) {
-        group = 'gitbub.hotstu.tinyritro'//发布到 bintray 的groupId号
+        group = 'github.hotstu.tinyritro'//发布到 bintray 的groupId号
         version = "1.0.0" // 发布到 bintray 的版本号
         apply from: "../deployBintray.gradle"
         apply from: "../deployLocalMaven.gradle"

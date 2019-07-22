@@ -4,7 +4,7 @@
 uploadArchives {
     //println(project.name)
     repositories.mavenDeployer {
-        repository(url: uri("${userHome}/repo"))
+        //repository(url: uri("${userHome}/repo"))
         pom.groupId = project.group
         pom.artifactId = project.name
         pom.version = project.version

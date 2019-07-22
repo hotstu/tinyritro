@@ -18,8 +18,8 @@
 加入依赖
 
 ```java app/build.gradle
-    annotationProcessor 'gitbub.hotstu.tinyritro:compiler:1.0.0'
-    implementation 'gitbub.hotstu.tinyritro:tlib:1.0.0'
+    annotationProcessor 'github.hotstu.tinyritro:compiler:1.0.0'
+    implementation 'github.hotstu.tinyritro:tlib:1.0.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.8'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
     implementation 'com.squareup.okhttp3:okhttp:3.9.1'
