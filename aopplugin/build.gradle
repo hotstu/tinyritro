@@ -12,5 +12,8 @@ dependencies {
 }
 
 
+apply from: "../deployBintray.gradle"
+apply from: "../deployLocalMaven.gradle"
+
 
 

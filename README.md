@@ -1,4 +1,6 @@
- [ ![Download](https://api.bintray.com/packages/hglf/maven/tinyritro/images/download.svg) ](https://bintray.com/hglf/maven/tinyritro/_latestVersion)[![Build Status](https://travis-ci.org/hotstu/tinyritro.svg?branch=master)](https://travis-ci.org/hotstu/tinyritro) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+ [![Download](https://api.bintray.com/packages/hglf/maven/tinyritro_hglf/images/download.svg) ](https://bintray.com/hglf/maven/tinyritro_hglf/_latestVersion)
+ [![Build Status](https://travis-ci.org/hotstu/tinyritro.svg?branch=master)](https://travis-ci.org/hotstu/tinyritro)
+ [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 ## tinyritro
 

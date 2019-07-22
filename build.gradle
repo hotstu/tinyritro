@@ -25,8 +25,6 @@ subprojects {
     if ("lib" == it.name || "aopplugin" == it.name || "compiler" == it.name) {
         group = 'github.hotstu.tinyritro'//发布到 bintray 的groupId号
         version = "1.0.0" // 发布到 bintray 的版本号
-        apply from: "../deployBintray.gradle"
-        apply from: "../deployLocalMaven.gradle"
     }
 }
 
