@@ -44,7 +44,7 @@ import github.hotstu.tinyritro.lib.anotations.QueryParam;
 
 @AutoService(Processor.class)
 @SupportedAnnotationTypes({"github.hotstu.tinyritro.lib.anotations.Query"})
-public class MyProcessor extends AbstractProcessor {
+public class TinyRitroProcessor extends AbstractProcessor {
 
     private Filer filer;
     private Elements utils;
