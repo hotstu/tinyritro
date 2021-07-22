@@ -5,11 +5,11 @@ android {
         sourceCompatibility 1.8
         targetCompatibility 1.8
     }
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "github.hotstu.tinyritrodemo"
         minSdkVersion 19
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
     }
@@ -30,7 +30,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.github.hotstu.rxfetch:lib:1.0.0'
-    //annotationProcessor 'github.hotstu.tinyritro:compiler:1.0.0'
     annotationProcessor project(':compiler')
     implementation project(':runtime')
 }

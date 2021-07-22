@@ -10,6 +10,7 @@ dependencies {
 
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
+apply from: "../gradle-mvn-push-java.gradle"
 
 
 
