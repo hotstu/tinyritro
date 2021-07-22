@@ -2,9 +2,10 @@ apply plugin: 'java-library'
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.auto.service:auto-service:1.0-rc2'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc4'
+    implementation 'com.google.auto.service:auto-service:1.0-rc4'
     implementation 'com.squareup:javapoet:1.10.0'
-    implementation project(':lib')
+    implementation project(':runtime')
 }
 
 //  解决build警告：编码GBK的不可映射字符
@@ -15,8 +16,7 @@ tasks.withType(JavaCompile) {
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
-apply from: "../deployBintray.gradle"
-apply from: "../deployLocalMaven.gradle"
+
 
 
 

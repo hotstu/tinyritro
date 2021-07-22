@@ -2,10 +2,10 @@ package github.hotstu.tinyritrodemo;
 
 import java.util.Map;
 
-import github.hotstu.tinyritro.lib.anotations.EntryPoint;
-import github.hotstu.tinyritro.lib.anotations.PathParam;
-import github.hotstu.tinyritro.lib.anotations.Query;
-import github.hotstu.tinyritro.lib.anotations.QueryParam;
+import io.github.hotstu.tinyritro.anotations.EntryPoint;
+import io.github.hotstu.tinyritro.anotations.PathParam;
+import io.github.hotstu.tinyritro.anotations.Query;
+import io.github.hotstu.tinyritro.anotations.QueryParam;
 import io.reactivex.Flowable;
 
 /**

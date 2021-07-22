@@ -1,4 +1,4 @@
-package github.hotstu.tinyritro.lib.anotations;
+package io.github.hotstu.tinyritro.anotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

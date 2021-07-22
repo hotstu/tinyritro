@@ -1,4 +1,4 @@
-package github.hotstu.tinyritro.lib.http;
+package io.github.hotstu.tinyritro.http;
 
 import org.apache.commons.text.StringSubstitutor;
 

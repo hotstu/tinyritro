@@ -1,4 +1,4 @@
-package github.hotstu.tinyritro.compiler;
+package io.github.hotstu.tinyritro;
 
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -37,24 +38,21 @@ import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 
-import github.hotstu.tinyritro.lib.anotations.EntryPoint;
-import github.hotstu.tinyritro.lib.anotations.PathParam;
-import github.hotstu.tinyritro.lib.anotations.Query;
-import github.hotstu.tinyritro.lib.anotations.QueryParam;
+import io.github.hotstu.tinyritro.anotations.*;
 
 @AutoService(Processor.class)
-@SupportedAnnotationTypes({"github.hotstu.tinyritro.lib.anotations.Query"})
+@SupportedAnnotationTypes({"io.github.hotstu.tinyritro.anotations.Query"})
 public class TinyRitroProcessor extends AbstractProcessor {
 
     private Filer filer;
     private Elements utils;
     private Types typeUtils;
     private static final String FLOWABLE_TYPE = "io.reactivex.Flowable";
-    private static final String RXFETCH_TYPE = "github.hotstu.labo.rxfetch.RxFetch";
-    private static final String UrlFormatter_TYPE = "github.hotstu.tinyritro.lib.http.UrlFormatter";
+    private static final String RXFETCH_TYPE = "io.github.hotstu.rxfetch.RxFetch";
+    private static final String UrlFormatter_TYPE = "io.github.hotstu.tinyritro.http.UrlFormatter";
     private static final String OKHTTPCLIENT_TYPE = "okhttp3.OkHttpClient";
     private static final String TYPETOKEN_TYPE = "com.google.gson.reflect.TypeToken";
-    private static final String PAKAGE_NAME = "github.hotstu.tinyritro.gen";
+    private static final String PAKAGE_NAME = "io.github.hotstu.tinyritro";
     private static final String FILE_NAME = "TinyRitro";
     private ClassName rxFetchClass;
     private ClassName okhttpclientClass;

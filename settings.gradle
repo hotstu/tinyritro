@@ -1,1 +1,1 @@
-include ':app', ':lib', ':compiler', ':aopplugin'
+include ':app', ':runtime', ':compiler'

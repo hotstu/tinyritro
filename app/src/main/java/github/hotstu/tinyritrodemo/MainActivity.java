@@ -8,11 +8,10 @@ import android.widget.Toast;
 import java.util.HashMap;
 
 import androidx.appcompat.app.AppCompatActivity;
-import github.hotstu.tinyritro.gen.TinyRitro;
-import github.hotstu.tinyritrodemo.aop.WithinPermission;
+
+import io.github.hotstu.tinyritro.TinyRitro;
 import io.reactivex.disposables.Disposable;
 
-import static android.Manifest.permission.CAMERA;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,8 +36,4 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @WithinPermission({CAMERA})
-    public void send2(View v) {
-        Toast.makeText(this, "open camera", Toast.LENGTH_LONG).show();
-    }
 }
